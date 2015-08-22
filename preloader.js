@@ -21,7 +21,7 @@
 //  DEALINGS IN THE SOFTWARE.
 
 
-export default class preloader {
+/*export default*/ class preloader {
 	static getTimestamp() {
 		const perfnow = window.performance.now || window.performance.webkitNow;
 		return perfnow ? perfnow.call(window.performance) : new Date().getTime();
@@ -38,10 +38,13 @@ export default class preloader {
 			end: 0,
 		};
 		this.total = 0;
+		this.images = [];
 		this._queue = [];
-		this._images = [];
 
-		this.enqueue(...images);
+		if(onCompl && images.length) {
+			this.enqueue(...images);
+			this.
+		}
 	}
 
 	enqueue(...elements) {
@@ -51,7 +54,7 @@ export default class preloader {
 
 	finish(index, image) {
 		--this.total;
-		this._images.forEach(img => {
+		this.images.forEach(img => {
 			if(img.index == index)
 				img.size = {
 					width: image.width,
@@ -62,8 +65,8 @@ export default class preloader {
 		if(!total) {	
 			time.end = new Date().getTime();
 			this.onComplete({
-				time: ((time.end - time.start) / 1e3).toPrecision(2),
-				images: images
+				time: (time.end - time.start).toPrecision(0),
+				images
 			});
 		}
 	}
@@ -71,7 +74,7 @@ export default class preloader {
 	preload(cbk) {
 		this.onComplete = cbk || this.onComplete;
 		this.time.start = getTimestamp();
-		this.total = queue.length;
+		this.total = _queue.length;
 		for(let index = this.total; --i;) {
 			let image = new Image();
 			this.images.push({
@@ -92,7 +95,7 @@ export default class preloader {
 		this.queue(this.getCSSImages()).preload(cbk);
 	}*/
 
-//TODO: maybe implement getting CSS images?	
+//TODO: implement getting CSS images	
 
 /*
             return {
