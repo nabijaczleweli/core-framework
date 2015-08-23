@@ -24,7 +24,7 @@
 
 
 minify :
-	cat preloader.js | awk "{gsub(/\\/\\/.*/, \"\"); print}" | awk "{gsub(/^\\s+/, \" \"); print}" | grep -v "^[[:space:]]*$$" | sed -r ":a; s%(.*)/\*.*\*/%\1%; ta; /\/\*/ !b; N; ba" | tr -d "\\n" | sed "s/{[[:space:]]/{/g" | sed "s/[[:space:]]{/{/g" | sed "s/}[[:space:]]/}/g" | sed "s/[[:space:]]}/}/g" | sed "s/;[[:space:]]/;/g" | sed "s/[[:space:]]=/=/g" | sed "s/=[[:space:]]/=/g" | sed "s/[[:space:]]+[[:space:]]/+/g" | sed "s/[[:space:]]-[[:space:]]/-/g" | sed "s=[[:space:]]/[[:space:]]=/=g"> preloader.min.js
+	cat preloader.js | awk "{gsub(/\\/\\/.*/, \"\"); print}" | awk "{gsub(/^\\s+/, \" \"); print}" | grep -v "^[[:space:]]*$$" | sed -r ":a; s%(.*)/\*.*\*/%\1%; ta; /\/\*/ !b; N; ba" | sed -r 's/[[:space:]]*//' | tr -d "\\n" | sed "s/{[[:space:]]/{/g" | sed "s/[[:space:]]{/{/g" | sed "s/}[[:space:]]/}/g" | sed "s/[[:space:]]}/}/g" | sed "s/;[[:space:]]/;/g" | sed "s/[[:space:]]=/=/g" | sed "s/=[[:space:]]/=/g" | sed "s/[[:space:]]+[[:space:]]/+/g" | sed "s/[[:space:]]-[[:space:]]/-/g" | sed "s=[[:space:]]/[[:space:]]=/=g" > preloader.min.js
 
 #	minifyjs --minify --level=0 --engine uglify --input preloader.js --output preloader.min.js
 

@@ -43,7 +43,7 @@
 
 		if(onCompl && images.length) {
 			this.enqueue(...images);
-			this.
+			this.preload();
 		}
 	}
 
