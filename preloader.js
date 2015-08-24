@@ -41,7 +41,7 @@ export default class preloader {
 		this.images = [];
 		this._queue = [];
 
-		if(onCompl && images.length) {
+		if(onCompl && images) {
 			this.enqueue(...images);
 			this.preload();
 		}
@@ -52,7 +52,7 @@ export default class preloader {
 		return this;
 	}
 
-	finish(index, image) {
+	_finish(index, image) {
 		--this.total;
 		this.images.forEach(img => {
 			if(img.index == index)
@@ -85,8 +85,8 @@ export default class preloader {
 					height: 0
 				}
 			});
-			image.onload = image.onerror = image.onabort = (() => this.finish(index, image));
-			image.src = this._queue[index].source + (this.config.cache ? ('?__preloader_cache_invalidator=' + preloader.getTimestamp()) : '');
+			image.onload = image.onerror = image.onabort = (() => this._finish(index, image));
+			image.src = this._queue[index].source + (this.config.cache ? '' : ('?__preloader_cache_invalidator=' + preloader.getTimestamp()));
 		}
 	}
 }
@@ -98,67 +98,6 @@ export default class preloader {
 //TODO: implement getting CSS images	
 
 /*
-            return {
-                onComplete: function(ui) {},
-                images: function() {
-                    return images;
-                },
-                reset: function() {
-                    queue = [];
-                    images = [];
-                    total = 0;
-                    return this;
-                },
-                queue: function(element) {
-                    if (Core.pattern.isString(element)) {
-                        queue.push({
-                            source: element
-                        });
-                    } else {
-                        $.each(element, function(index, element) {
-                            queue.push(element);
-                        });
-                    }
-                    return this;
-                },
-                finish: function(event, index, image) {
-                    total--;
-                    $.each(images, function(x, i) {
-                        if (i.index == index) {
-                            i.size = {
-                                width: image.width,
-                                height: image.height
-                            };
-                        }
-                    });
-                    if (0 == total) {
-                        time.end = new Date().getTime();
-                        this.onComplete.apply(this, [ {
-                            time: ((time.end - time.start) / 1e3).toPrecision(2),
-                            images: images
-                        } ]);
-                    }
-                },
-                preload: function(callback) {
-                    this.onComplete = callback || this.onComplete;
-                    time.start = new Date().getTime();
-                    total = i = queue.length;
-                    while (i--) {
-                        var image = new Image();
-                        images.push({
-                            index: i,
-                            image: image,
-                            size: {
-                                width: 0,
-                                height: 0
-                            }
-                        });
-                        image.onload = Core.delegate(this, this.finish, [ i, image ]);
-                        image.onerror = Core.delegate(this, this.finish, [ i, image ]);
-                        image.onabort = Core.delegate(this, this.finish, [ i, image ]);
-                        image.src = config.cache ? queue[i].source : queue[i].source + "?u=" + new Date().getTime();
-                    }
-                },
                 preloadCssImages: function(callback) {
                     var images = this.getCssImages();
                     this.queue(images).preload(callback);
