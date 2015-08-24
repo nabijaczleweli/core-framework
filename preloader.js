@@ -21,7 +21,7 @@
 //  DEALINGS IN THE SOFTWARE.
 
 
-/*export default*/ class preloader {
+export default class preloader {
 	static getTimestamp() {
 		const perfnow = window.performance.now || window.performance.webkitNow;
 		return perfnow ? perfnow.call(window.performance) : new Date().getTime();
@@ -62,20 +62,20 @@
 				}
 		});
 
-		if(!total) {	
-			time.end = new Date().getTime();
+		if(!this.total) {	
+			this.time.end = new Date().getTime();
 			this.onComplete({
-				time: (time.end - time.start).toPrecision(0),
-				images
+				time: Math.round(this.time.end - this.time.start),
+				images: this.images
 			});
 		}
 	}
 
 	preload(cbk) {
 		this.onComplete = cbk || this.onComplete;
-		this.time.start = getTimestamp();
-		this.total = _queue.length;
-		for(let index = this.total; --i;) {
+		this.time.start = preloader.getTimestamp();
+		this.total = this._queue.length;
+		for(let index = this.total; --index;) {
 			let image = new Image();
 			this.images.push({
 				index,
@@ -85,8 +85,8 @@
 					height: 0
 				}
 			});
-			image.onload = image.onerror = image.onabort = (() => /*this.*/finish(index, image));
-			image.src = queue[index].source + (config.cache ? ('?__preloader_cache_invalidator=' + getTimestamp()) : '');
+			image.onload = image.onerror = image.onabort = (() => this.finish(index, image));
+			image.src = this._queue[index].source + (this.config.cache ? ('?__preloader_cache_invalidator=' + preloader.getTimestamp()) : '');
 		}
 	}
 }
