@@ -48,7 +48,7 @@ export default class preloader {
 	}
 
 	enqueue(...elements) {
-		this._queue = this._queue.concat(elements.map(elem => {(typeof elem === 'string') ? {source: elem} : elem}));
+		this._queue = this._queue.concat(elements.map(elem => ((typeof elem === 'string') ? {source: elem} : elem)));
 		return this;
 	}
 
@@ -59,7 +59,7 @@ export default class preloader {
 				img.size = {
 					width: image.width,
 					height: image.heigth,
-				}
+				};
 		});
 
 		if(!this.total) {	
