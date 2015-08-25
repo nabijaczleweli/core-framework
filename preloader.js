@@ -46,7 +46,8 @@ export default class preloader {
 	}
 
 	enqueue(...elements) {
-		this._queue.splice(0, 0, ...elements.map(elem => (typeof elem === 'string') ? {source: elem} : elem));
+		if(elements)
+			this._queue.splice(0, 0, ...elements.map(elem => (typeof elem === 'string') ? {source: elem} : elem));
 		return this;
 	}
 
