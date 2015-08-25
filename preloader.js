@@ -27,7 +27,7 @@ export default class preloader {
 	}
 
 	constructor(onCompl, ...images) {
-		this.onComplete = onCompl || () => {};
+		this.onComplete = onCompl;
 		this.config = {
 			cache: true,
 		};
@@ -43,6 +43,14 @@ export default class preloader {
 			this.enqueue(...images);
 			this.preload();
 		}
+	}
+
+	get onComplete() {
+		return this._onComplete;
+	}
+
+	set onComplete(newval) {
+		this._onComplete = newval || () => {};
 	}
 
 	enqueue(...elements) {
