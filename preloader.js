@@ -27,7 +27,7 @@ export default class preloader {
 	}
 
 	constructor(onCompl, ...images) {
-		this.onComplete = onCompl;
+		this.onComplete = onCompl || () => {};
 		this.config = {
 			cache: true,
 		};
