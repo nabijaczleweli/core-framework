@@ -95,7 +95,7 @@ export default class preloader {
 	_getCSSRules() {
 		const allrules = [];
 		const collectorRaw = rules => {
-			Array.from(rules).forEach(rule => {
+			Array.prototype.forEach.call(rules, rule => {
 				allrules.push({
 					rule,
 					selectorText: rule.selectorText || null,
@@ -107,7 +107,7 @@ export default class preloader {
 		};
 		const collector = sheet => collectorRaw(sheet.rules || sheet.cssRules || []);
 
-		Array.from(document.styleSheets).forEach(sheet => {
+		Array.prototype.forEach.call(document.styleSheets, sheet => {
 			collector(sheet);
 			(sheet.imports || []).forEach(collector);
 		});
