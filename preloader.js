@@ -71,16 +71,18 @@ export default class preloader {
 		this.time.start = preloader.getTimestamp();
 		this.total = this._queue.length;
 		this._queue.forEach(queued => {
+			let index = this.images.length;
 			let image = new Image();
+
 			this.images.push({
-				index: this.images.length,
+				index,
 				image,
 				size: {
 					width: 0,
 					height: 0,
 				},
 			});
-			image.onload = image.onerror = image.onabort = (() => this._finish(this.images.length - 1, image));
+			image.onload = image.onerror = image.onabort = (() => this._finish(index, image));
 			image.src = queued.source + (this.config.cache ? '' : ('?__preloader_cache_invalidator=' + preloader.getTimestamp()));
 		});
 		this._queue.length = 0;
