@@ -34,7 +34,7 @@ all : es5 minify
 
 minify :
 	minifyjs --minify --level=2 --input preloader.es5.js --output preloader.es5.min.js 2>$(DEVNULL) || :
-	cat preloader.js | awk "{gsub(/\\/\\/.*/, \"\"); print}" | awk "{gsub(/^\\s+/, \" \"); print}" | grep -v "^[[:space:]]*$$" | sed -r ":a; s%(.*)/\*.*\*/%\1%; ta; /\/\*/ !b; N; ba" | sed -r 's/[[:space:]]*//' | tr -d "\\n" | sed "s/{[[:space:]]/{/g" | sed "s/[[:space:]]{/{/g" | sed "s/}[[:space:]]/}/g" | sed "s/[[:space:]]}/}/g" | sed "s/;[[:space:]]/;/g" | sed "s/[[:space:]]=/=/g" | sed "s/=[[:space:]]/=/g" | sed "s/[[:space:]]+[[:space:]]/+/g" | sed "s/[[:space:]]-[[:space:]]/-/g" | sed "s=[[:space:]]/[[:space:]]=/=g" > preloader.min.js
+	cat preloader.js | awk "{gsub(/\\/\\/.*/, \"\"); print}" | awk "{gsub(/^\\s+/, \" \"); print}" | grep -v "^[[:space:]]*$$" | sed -r ":a; s%(.*)/\*.*\*/%\1%; ta; /\/\*/ !b; N; ba" | sed -r 's/[[:space:]]*//' | tr -d "\\n" | sed "s/{[[:space:]]/{/g" | sed "s/[[:space:]]{/{/g" | sed "s/}[[:space:]]/}/g" | sed "s/[[:space:]]}/}/g" | sed "s/;[[:space:]]/;/g" | sed "s/[[:space:]]=/=/g" | sed "s/=[[:space:]]/=/g" | sed "s/[[:space:]]+[[:space:]]/+/g" | sed "s/[[:space:]]-[[:space:]]/-/g" | sed "s=[[:space:]]/[[:space:]]=/=g" | sed "s/[[:space:]]*||[[:space:]]*/||/g" | sed "s/[[:space:]]+?[[:space:]]+/?/g" > preloader.min.js
 
 es5 : 
 	babel --source-maps inline --out-file preloader.es5.js preloader.js
