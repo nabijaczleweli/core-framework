@@ -94,6 +94,15 @@ export default class preloader {
 
 	_getCSSRules() {
 		const allrules = [];
+		const safeRules = sheet => {
+			try {
+				return sheet.rules || sheet.cssRules || [];
+			} catch(e) {
+				if(e.name !== 'SecurityError')
+					throw e;
+				return [];
+			}
+		};
 		const collectorRaw = rules => {
 			Array.prototype.forEach.call(rules, rule => {
 				allrules.push({
@@ -105,7 +114,7 @@ export default class preloader {
 				collector(rule.styleSheet || {});
 			});
 		};
-		const collector = sheet => collectorRaw(sheet.rules || sheet.cssRules || []);
+		const collector = sheet => collectorRaw(safeRules(sheet));
 
 		Array.prototype.forEach.call(document.styleSheets, sheet => {
 			collector(sheet);
