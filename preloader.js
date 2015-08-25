@@ -89,15 +89,56 @@ export default class preloader {
 			image.src = this._queue[index].source + (this.config.cache ? '' : ('?__preloader_cache_invalidator=' + preloader.getTimestamp()));
 		}
 	}
+
+	preloadCSSImages(cbk) {
+		this.enqueue(...this.getCSSImages()).preload(cbk);
+	}
+
+	_getCSSRules() {
+		const allrules = [];
+		const collectorRaw = rules => {
+			rules.forEach(rule => {
+				allrules.push({
+					rule,
+					selectorText: rule.selectorText || null,
+					declaration: rule.cssText || rule.style.cssText
+				});
+
+				collector(rule.styleSheet || {});
+			});
+		};
+		const collector = sheet => collectorRaw(sheet.rules || sheet.cssRules || []);
+
+		document.forEach(sheet => {
+			collector(sheet.rules || sheet.cssRules);
+			(sheet.imports || []).forEach(collector);
+		});
+
+		return allrules;
+	}
+
+	_getCSSImages() {
+		return this._getCSSRules().reduce((prev, cur) => prev.concat(cur.declaration.match(/[^(|'"]+.(jpg|jpeg|gif|png|apng|bmp)\)?/ig)));  // formats from https://en.wikipedia.org/wiki/Comparison_of_web_browsers#Image_format_support
+	}
 }
 
-/*	preloadCSSImages(cbk) {
-		this.queue(this.getCSSImages()).preload(cbk);
-	}*/
-
-//TODO: implement getting CSS images	
-
 /*
+                getCssImages: function() {
+                    var rules = this.getCssRules(), i = rules.length, images = [], regex = new RegExp("[^(|'\"]+.(gif|jpg|jpeg|png)\\)?", "ig");
+                    while (i--) {
+                        var img = rules[i].declaration.match(regex);
+                        if (img && img.length) {
+                            if (1 == img.length) {
+                                images.push(img);
+                            } else {
+                                for (var i in img) {
+                                    images.push(img[i]);
+                                }
+                            }
+                        }
+                    }
+                    return images;
+                }
                 preloadCssImages: function(callback) {
                     var images = this.getCssImages();
                     this.queue(images).preload(callback);
@@ -134,22 +175,6 @@ export default class preloader {
                     }
                     return collection;
                 },
-                getCssImages: function() {
-                    var rules = this.getCssRules(), i = rules.length, images = [], regex = new RegExp("[^(|'\"]+.(gif|jpg|jpeg|png)\\)?", "ig");
-                    while (i--) {
-                        var img = rules[i].declaration.match(regex);
-                        if (img && img.length) {
-                            if (1 == img.length) {
-                                images.push(img);
-                            } else {
-                                for (var i in img) {
-                                    images.push(img[i]);
-                                }
-                            }
-                        }
-                    }
-                    return images;
-                }
             };
         }()
     });*/
