@@ -23,8 +23,7 @@
 
 export default class preloader {
 	static getTimestamp() {
-		const perfnow = window.performance.now || window.performance.webkitNow;
-		return perfnow ? perfnow.call(window.performance) : new Date().getTime();
+		return (window.performance.now || window.performance.webkitNow || Date.now).call(window.performance);
 	}
 
 	constructor(onCompl, ...images) {
