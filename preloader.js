@@ -117,7 +117,7 @@ export default class preloader {
 	}
 
 	_getCSSImages() {
-		return this._getCSSRules().reduce((prev, cur) => prev.concat(cur.declaration.match(/[^(|'"]+.(jpg|jpeg|gif|png|apng|bmp)\)?/ig)));  // formats from https://en.wikipedia.org/wiki/Comparison_of_web_browsers#Image_format_support
+		return this._getCSSRules().reduce((prev, cur) => prev.concat(cur.declaration.match(/[^(|'"]+.(jpg|jpeg|gif|png|apng|bmp)\)?/ig)), []);  // formats from https://en.wikipedia.org/wiki/Comparison_of_web_browsers#Image_format_support
 	}
 }
 
