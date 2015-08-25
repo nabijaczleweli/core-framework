@@ -50,22 +50,6 @@ export default class preloader {
 		return this;
 	}
 
-	_finish(index, image) {
-		--this.total;
-		(this.images.find(img => img.index == index) || {}).size = {
-			width: image.width,
-			height: image.heigth,
-		};
-
-		if(!this.total) {	
-			this.time.end = preloader.getTimestamp();
-			this.onComplete({
-				time: Math.round(this.time.end - this.time.start),
-				images: this.images,
-			});
-		}
-	}
-
 	preload(cbk) {
 		this.onComplete = cbk || this.onComplete;
 		this.time.start = preloader.getTimestamp();
@@ -90,6 +74,22 @@ export default class preloader {
 
 	preloadCSSImages(cbk) {
 		this.enqueue(...this._getCSSImages()).preload(cbk);
+	}
+
+	_finish(index, image) {
+		--this.total;
+		(this.images.find(img => img.index == index) || {}).size = {
+			width: image.width,
+			height: image.height,
+		};
+
+		if(!this.total) {
+			this.time.end = preloader.getTimestamp();
+			this.onComplete({
+				time: Math.round(this.time.end - this.time.start),
+				images: this.images,
+			});
+		}
 	}
 
 	_getCSSRules() {
