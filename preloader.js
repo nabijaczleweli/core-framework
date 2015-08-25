@@ -46,8 +46,7 @@ export default class preloader {
 	}
 
 	enqueue(...elements) {
-		if(elements)
-			this._queue.splice(0, 0, ...elements.map(elem => (typeof elem === 'string') ? {source: elem} : elem));
+		this._queue.splice(0, 0, ...elements.map(elem => (typeof elem === 'string') ? {source: elem} : elem));
 		return this;
 	}
 
@@ -127,7 +126,7 @@ export default class preloader {
 
 	_getCSSImages() {
 		const images = [];
-		this._getCSSRules().forEach(rule => images.splice(0, 0, ...rule.declaration.match(/[^(|'"]+.(jpg|jpeg|gif|png|apng|bmp)\)?/ig)));  // formats from https://en.wikipedia.org/wiki/Comparison_of_web_browsers#Image_format_support
+		this._getCSSRules().forEach(rule => images.splice(0, 0, ...(rule.declaration.match(/[^(|'"]+.(jpg|jpeg|gif|png|apng|bmp)\)?/ig) || [])));  // formats from https://en.wikipedia.org/wiki/Comparison_of_web_browsers#Image_format_support
 		return images;
 	}
 }
