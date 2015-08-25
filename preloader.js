@@ -39,26 +39,23 @@ export default class preloader {
 		this.images = [];
 		this._queue = [];
 
-		if(onCompl && images) {
+		if(onCompl && images && images.length) {
 			this.enqueue(...images);
 			this.preload();
 		}
 	}
 
 	enqueue(...elements) {
-		this._queue = this._queue.concat(elements.map(elem => ((typeof elem === 'string') ? {source: elem} : elem)));
+		this._queue.splice(0, 0, ...elements.map(elem => ((typeof elem === 'string') ? {source: elem} : elem)));
 		return this;
 	}
 
 	_finish(index, image) {
 		--this.total;
-		this.images.forEach(img => {
-			if(img.index == index)
-				img.size = {
-					width: image.width,
-					height: image.heigth,
-				};
-		});
+		(this.images.find(img => img.index == index) || {}).size = {
+			width: image.width,
+			height: image.heigth,
+		};
 
 		if(!this.total) {	
 			this.time.end = preloader.getTimestamp();
@@ -73,19 +70,20 @@ export default class preloader {
 		this.onComplete = cbk || this.onComplete;
 		this.time.start = preloader.getTimestamp();
 		this.total = this._queue.length;
-		for(let index = this.total; index--;) {
+		this._queue.forEach(queued => {
 			let image = new Image();
 			this.images.push({
-				index,
+				index: this.images.length,
 				image,
 				size: {
 					width: 0,
 					height: 0,
 				},
 			});
-			image.onload = image.onerror = image.onabort = (() => this._finish(index, image));
-			image.src = this._queue[index].source + (this.config.cache ? '' : ('?__preloader_cache_invalidator=' + preloader.getTimestamp()));
-		}
+			image.onload = image.onerror = image.onabort = (() => this._finish(this.images.length - 1, image));
+			image.src = queued.source + (this.config.cache ? '' : ('?__preloader_cache_invalidator=' + preloader.getTimestamp()));
+		});
+		this._queue.length = 0;
 	}
 
 	preloadCSSImages(cbk) {
@@ -95,7 +93,7 @@ export default class preloader {
 	_getCSSRules() {
 		const allrules = [];
 		const collectorRaw = rules => {
-			Array.prototype.forEach.call(rules, rule => {
+			Array.from(rules).forEach(rule => {
 				allrules.push({
 					rule,
 					selectorText: rule.selectorText || null,
@@ -107,7 +105,7 @@ export default class preloader {
 		};
 		const collector = sheet => collectorRaw(sheet.rules || sheet.cssRules || []);
 
-		Array.prototype.forEach.call(document.styleSheets, sheet => {
+		Array.from(document.styleSheets).forEach(sheet => {
 			collector(sheet);
 			(sheet.imports || []).forEach(collector);
 		});
