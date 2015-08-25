@@ -37,7 +37,7 @@ minify :
 	cat preloader.js | awk "{gsub(/\\/\\/.*/, \"\"); print}" | awk "{gsub(/^\\s+/, \" \"); print}" | grep -v "^[[:space:]]*$$" | sed -r ":a; s%(.*)/\*.*\*/%\1%; ta; /\/\*/ !b; N; ba" | sed -r 's/[[:space:]]*//' | tr -d "\\n" | sed "s/{[[:space:]]/{/g" | sed "s/[[:space:]]{/{/g" | sed "s/}[[:space:]]/}/g" | sed "s/[[:space:]]}/}/g" | sed "s/;[[:space:]]/;/g" | sed "s/[[:space:]]=/=/g" | sed "s/=[[:space:]]/=/g" | sed "s/[[:space:]]+[[:space:]]/+/g" | sed "s/[[:space:]]-[[:space:]]/-/g" | sed "s=[[:space:]]/[[:space:]]=/=g" | sed "s/[[:space:]]*||[[:space:]]*/||/g" | sed "s/[[:space:]]+?[[:space:]]+/?/g" > preloader.min.js
 
 es5 : 
-	babel --source-maps inline --out-file preloader.es5.js preloader.js
+	babel --no-comments --modules umd --source-maps inline --out-file preloader.es5.js preloader.js
 
 clean :
 	rm -f preloader.*.js

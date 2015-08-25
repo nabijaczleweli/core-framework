@@ -30,7 +30,6 @@ export default class preloader {
 		this.onComplete = onCompl;
 		this.config = {
 			cache: true,
-			parallel: true,
 		};
 		this.time = {
 			start: 0,
@@ -62,10 +61,10 @@ export default class preloader {
 		});
 
 		if(!this.total) {	
-			this.time.end = new Date().getTime();
+			this.time.end = preloader.getTimestamp();
 			this.onComplete({
 				time: Math.round(this.time.end - this.time.start),
-				images: this.images
+				images: this.images,
 			});
 		}
 	}
@@ -74,15 +73,15 @@ export default class preloader {
 		this.onComplete = cbk || this.onComplete;
 		this.time.start = preloader.getTimestamp();
 		this.total = this._queue.length;
-		for(let index = this.total; --index;) {
+		for(let index = this.total; index--;) {
 			let image = new Image();
 			this.images.push({
 				index,
 				image,
 				size: {
 					width: 0,
-					height: 0
-				}
+					height: 0,
+				},
 			});
 			image.onload = image.onerror = image.onabort = (() => this._finish(index, image));
 			image.src = this._queue[index].source + (this.config.cache ? '' : ('?__preloader_cache_invalidator=' + preloader.getTimestamp()));
@@ -90,17 +89,17 @@ export default class preloader {
 	}
 
 	preloadCSSImages(cbk) {
-		this.enqueue(...this.getCSSImages()).preload(cbk);
+		this.enqueue(...this._getCSSImages()).preload(cbk);
 	}
 
 	_getCSSRules() {
 		const allrules = [];
 		const collectorRaw = rules => {
-			rules.forEach(rule => {
+			Array.prototype.forEach.call(rules, rule => {
 				allrules.push({
 					rule,
 					selectorText: rule.selectorText || null,
-					declaration: rule.cssText || rule.style.cssText
+					declaration: rule.cssText || rule.style.cssText,
 				});
 
 				collector(rule.styleSheet || {});
@@ -108,8 +107,8 @@ export default class preloader {
 		};
 		const collector = sheet => collectorRaw(sheet.rules || sheet.cssRules || []);
 
-		document.forEach(sheet => {
-			collector(sheet.rules || sheet.cssRules);
+		Array.prototype.forEach.call(document.styleSheets, sheet => {
+			collector(sheet);
 			(sheet.imports || []).forEach(collector);
 		});
 
