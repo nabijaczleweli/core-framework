@@ -1,4 +1,4 @@
-*core-preloader* is a simple library for preloading images, either manually specified or from currently loaded CSS.
+*core-preloader* is a simple library for preloading images, either specified manually or from currently loaded CSS.
 
 ## Usage ##
 
@@ -40,7 +40,6 @@ prel.onComplete[ = newFunc]
 ```
   * `newFunc`<sub>(opt)</sub>: the single-argument function to be called after preloading finishes
   * Never falsy
-  * Equivalent to `() => {}` by default
 
 ##### Configuration #####
 ```JavaScript
@@ -97,7 +96,7 @@ new preloader((ev) => console.log(`Preloaded ${ev.images.length} images in ${ev.
 ).preload();
 ```
 Prints:  
-> Preloaded 2 images in 110ms
+> Preloaded 2 images in *&lt;time&gt;*\*ms
 
 ##### Preload images from CSS #####
 
@@ -119,4 +118,8 @@ let prel = new preloader;
 prel.preloadCSSImages((ev) => console.log(`Preloaded ${ev.images.length} images from CSS in ${ev.time}ms`));
 ```
 Prints
-> Preloaded 2 images from CSS in 2026ms
+> Preloaded 2 images from CSS in *&lt;time&gt;*\*ms
+  
+  <br />
+\* <sub>concrete values omitted to avoid confusion</sub>
+
